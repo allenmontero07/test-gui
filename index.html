@@ -1,0 +1,112 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine-Search Pro | CMPS2212</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <main class="app-container" data-loading="false">
+        
+    
+        <header class="search-header">
+            <h1>Cine-Search Pro</h1>
+            <div class="search-box-wrapper">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    class="search-input" 
+                    placeholder="Search movies (e.g., 'Inception')..." 
+                    autocomplete="off"
+                    aria-label="Search for movies"
+                >
+            
+                <div class="spinner" aria-hidden="true"></div>
+            </div>
+            <div class="status-message" role="status" aria-live="polite"></div>
+        </header>
+
+        <!-- MAIN CONTENT GRID -->
+        <div class="content-grid">
+            
+        
+            <section class="results-section">
+                <h2>Results</h2>
+                <ul class="results-list" role="listbox" aria-label="Search results">
+    
+                </ul>
+                <div class="empty-state hidden">No results found.</div>
+            </section>
+
+   
+            <section class="detail-section" aria-live="polite">
+                <div class="detail-placeholder">
+                    <p>Select a movie to view details, cast, and trailers.</p>
+                </div>
+
+    
+                <div class="detail-content hidden">
+                    
+
+                    <div class="panel panel-details">
+                        <h2 id="detail-title">Movie Title</h2>
+                        <div class="meta-row">
+                            <span class="year" id="detail-year"></span>
+                            <span class="rating" id="detail-rating"></span>
+                        </div>
+                        <div class="genres" id="detail-genres"></div>
+                        <p class="overview" id="detail-overview"></p>
+                        <img id="detail-poster" class="poster" alt="Movie Poster">
+                    </div>
+
+
+                    <div class="panel panel-cast">
+                        <h3>Top Cast</h3>
+                        <ul class="cast-list" id="cast-list">
+
+                        </ul>
+                    </div>
+
+
+                    <div class="panel panel-videos">
+                        <h3>Trailers & Clips</h3>
+                        <div class="video-list" id="video-list">
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+
+    <template id="movie-item-template">
+        <li class="movie-item" role="option" tabindex="-1">
+            <img class="movie-poster" src="" alt="">
+            <div class="movie-info">
+
+                <h3 class="title"></h3> 
+                <p class="overview-preview"></p>
+                <span class="release-date"></span>
+            </div>
+        </li>
+    </template>
+
+
+    <template id="cast-item-template">
+        <li class="cast-item">
+            <img class="cast-profile" src="" alt="">
+            <div class="cast-info">
+                <span class="actor-name"></span>
+                <span class="character-name"></span>
+            </div>
+        </li>
+    </template>
+
+    <script src="SearchComponent.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

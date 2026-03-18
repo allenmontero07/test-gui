@@ -1,0 +1,209 @@
+:root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent: #e50914; 
+    --highlight-bg: #ffd700;
+    --highlight-text: #000;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Layout --- */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    transition: opacity 0.3s ease;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .content-grid { grid-template-columns: 1fr; }
+}
+
+/* --- Search Header & Spinner (Requirement 5) --- */
+.search-box-wrapper {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: var(--card-bg);
+    color: white;
+    box-sizing: border-box; /* Critical for padding */
+}
+
+.search-input:focus {
+    outline: 2px solid var(--accent);
+    border-color: transparent;
+}
+
+/* The Spinner Logic: Controlled purely by data-loading attribute */
+.spinner {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent);
+    animation: spin 1s linear infinite;
+    display: none; /* Hidden by default */
+}
+
+/* STATE MAGIC: When container has data-loading="true", show spinner */
+.app-container[data-loading="true"] .spinner {
+    display: block;
+}
+
+.app-container[data-loading="true"] .results-list {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* --- Results List --- */
+.results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.movie-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: var(--card-bg);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.movie-item:hover, .movie-item.active {
+    background: #333;
+    transform: translateX(5px);
+    border-left: 4px solid var(--accent);
+}
+
+.movie-poster {
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #333;
+}
+
+.movie-info {
+    flex: 1;
+}
+
+.movie-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.overview-preview {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- XSS Highlighting (Requirement 6) --- */
+.highlight {
+    background-color: var(--highlight-bg);
+    color: var(--highlight-text);
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* --- Detail Panels --- */
+.detail-section {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+.hidden { display: none !important; }
+
+.panel {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 1rem;
+}
+
+.panel:last-child { border-bottom: none; }
+
+.cast-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+.cast-item {
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.cast-profile {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #333;
+    margin-bottom: 5px;
+}
+
+.video-list a {
+    display: block;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+.video-list a:hover { text-decoration: underline; }
+
+
+.movie-poster.no-poster {
+    background-color: #333; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 0.7rem;
+}
+.movie-poster.no-poster::after {
+    content: "No Image"; 
+}
