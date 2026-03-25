@@ -25,7 +25,7 @@
             
                 <div class="spinner" aria-hidden="true"></div>
             </div>
-            <div class="status-message" role="status" aria-live="polite"></div>
+            <div class="status-message" id="status-bar" role="status" aria-live="polite"></div>
         </header>
 
         <!-- MAIN CONTENT GRID -->
@@ -33,8 +33,8 @@
             
         
             <section class="results-section">
-                <h2>Results</h2>
-                <ul class="results-list" role="listbox" aria-label="Search results">
+                <h2 id="results-header">Results</h2>
+                <ul class="results-list" id="result-list" role="listbox" aria-label="Search results">
     
                 </ul>
                 <div class="empty-state hidden">No results found.</div>
@@ -42,12 +42,12 @@
 
    
             <section class="detail-section" aria-live="polite">
-                <div class="detail-placeholder">
+                <div class="detail-placeholder" id="detail-empty">
                     <p>Select a movie to view details, cast, and trailers.</p>
                 </div>
 
     
-                <div class="detail-content hidden">
+                <div class="detail-content" id="detail-content" hidden>
                     
 
                     <div class="panel panel-details">
@@ -83,14 +83,12 @@
     </main>
 
 
-    <template id="movie-item-template">
-        <li class="movie-item" role="option" tabindex="-1">
-            <img class="movie-poster" src="" alt="">
-            <div class="movie-info">
-
-                <h3 class="title"></h3> 
-                <p class="overview-preview"></p>
-                <span class="release-date"></span>
+    <template id="result-template">
+        <li class="result-item" role="option" tabindex="-1">
+            <img class="result-poster-placeholder" src="" alt="">
+            <div class="result-info">
+                <h3 class="result-title"></h3> 
+                <p class="result-meta"></p>
             </div>
         </li>
     </template>
@@ -106,7 +104,7 @@
         </li>
     </template>
 
-    <script src="SearchComponent.js"></script>
+    <script src="config.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+/* --- KEEP YOUR ORIGINAL ROOTS & BASES --- */
 :root {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
@@ -16,12 +17,55 @@ body {
     padding: 0;
 }
 
-/* --- Layout --- */
+/* --- YOUR ORIGINAL LAYOUT --- */
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    transition: opacity 0.3s ease;
+}
+
+.search-header {
+    margin-bottom: 2rem;
+}
+
+.search-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+}
+
+.search-box-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    background: var(--card-bg);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.status-message {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    min-height: 20px;
 }
 
 .content-grid {
@@ -31,34 +75,8 @@ body {
     margin-top: 2rem;
 }
 
-@media (max-width: 768px) {
-    .content-grid { grid-template-columns: 1fr; }
-}
-
-/* --- Search Header & Spinner (Requirement 5) --- */
-.search-box-wrapper {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.search-input {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    border: 1px solid #333;
-    background: var(--card-bg);
-    color: white;
-    box-sizing: border-box; /* Critical for padding */
-}
-
-.search-input:focus {
-    outline: 2px solid var(--accent);
-    border-color: transparent;
-}
-
-/* The Spinner Logic: Controlled purely by data-loading attribute */
+/* --- REQUIREMENT 5: STATE-BASED SPINNER --- */
+/* JS only toggles data-loading="true" on .app-container. CSS handles the visual. */
 .spinner {
     position: absolute;
     right: 15px;
@@ -66,79 +84,49 @@ body {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.1);
     border-top-color: var(--accent);
-    animation: spin 1s linear infinite;
-    display: none; /* Hidden by default */
+    border-radius: 50%;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s;
 }
 
-/* STATE MAGIC: When container has data-loading="true", show spinner */
-.app-container[data-loading="true"] .spinner {
-    display: block;
+/* This selector is the "State-Based" requirement */
+[data-loading="true"] .spinner {
+    opacity: 1;
+    animation: spin 0.8s linear infinite;
 }
 
-.app-container[data-loading="true"] .results-list {
-    opacity: 0.5;
-    pointer-events: none;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes spin {
-    to { transform: translateY(-50%) rotate(360deg); }
-}
-
-/* --- Results List --- */
-.results-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.movie-item {
+/* --- REQUIREMENT 5: KEYBOARD NAVIGATION --- */
+.result-item {
     display: flex;
-    gap: 15px;
     padding: 15px;
     background: var(--card-bg);
-    margin-bottom: 10px;
     border-radius: 8px;
+    margin-bottom: 10px;
     cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
+    transition: transform 0.2s, border 0.2s;
+    border: 2px solid transparent;
 }
 
-.movie-item:hover, .movie-item.active {
-    background: #333;
+/* Style for the item selected via Arrow Keys */
+.result-item.active {
+    background: #2a2a2a;
+    border-color: var(--accent);
     transform: translateX(5px);
-    border-left: 4px solid var(--accent);
+    outline: none;
 }
 
-.movie-poster {
+.result-poster {
     width: 60px;
     height: 90px;
     object-fit: cover;
     border-radius: 4px;
-    background: #333;
 }
 
-.movie-info {
-    flex: 1;
-}
-
-.movie-info h3 {
-    margin: 0 0 5px 0;
-    font-size: 1rem;
-}
-
-.overview-preview {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* --- XSS Highlighting (Requirement 6) --- */
+/* --- REQUIREMENT 6: XSS SAFE HIGHLIGHTING --- */
 .highlight {
     background-color: var(--highlight-bg);
     color: var(--highlight-text);
@@ -147,63 +135,136 @@ body {
     border-radius: 2px;
 }
 
-/* --- Detail Panels --- */
+/* --- YOUR ORIGINAL DETAIL PANEL --- */
 .detail-section {
     background: var(--card-bg);
     padding: 20px;
     border-radius: 8px;
-    min-height: 400px;
 }
 
 .hidden { display: none !important; }
 
-.panel {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 1rem;
+/* --- RESULTS SECTION --- */
+.results-section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-size: 1.3rem;
 }
 
-.panel:last-child { border-bottom: none; }
-
-.cast-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+.results-list {
     list-style: none;
     padding: 0;
+    margin: 0;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
 }
 
-.cast-item {
+.empty-state {
+    padding: 40px 20px;
     text-align: center;
-    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
 }
 
-.cast-profile {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: #333;
-    margin-bottom: 5px;
+.detail-placeholder {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.detail-placeholder p {
+    margin: 0;
+}
+
+/* --- DETAIL PANEL STYLING --- */
+.detail-content h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: var(--text-primary);
+}
+
+.meta-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.meta-row span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rating {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.genres {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.overview {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+.panel {
+    margin-bottom: 20px;
+}
+
+.panel h2, .panel h3 {
+    margin-top: 0;
+}
+
+.poster {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.cast-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cast-list li {
+    margin-bottom: 8px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.video-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .video-list a {
-    display: block;
     color: var(--accent);
     text-decoration: none;
-    margin-bottom: 8px;
+    padding: 8px;
+    background: rgba(229, 9, 20, 0.1);
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
-.video-list a:hover { text-decoration: underline; }
 
-
-.movie-poster.no-poster {
-    background-color: #333; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #777;
-    font-size: 0.7rem;
+.video-list a:hover {
+    background: rgba(229, 9, 20, 0.2);
 }
-.movie-poster.no-poster::after {
-    content: "No Image"; 
+
+.video-list p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
