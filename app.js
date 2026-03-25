@@ -9,6 +9,7 @@ let controller = null;
 let debounceTimer = null;
 let activeIndex = -1;
 let currentQuery = '';
+let currentResults = [];
 
 // ── DOM REFS ──────────────────────────────────────────
 const searchInput = document.getElementById('search-input');
@@ -20,7 +21,7 @@ const detailContent = document.getElementById('detail-content');
 const template = document.getElementById('result-template');
 const searchWrap = searchInput.closest('[data-loading]');
 
-// ── XSS HARDENING (FRIEND'S VERSION) ──────────────────
+// ── XSS HARDENING  ──────────────────
 function buildHighlightedTitle(title, query) {
     const container = document.createElement("span");
     const idx = title.toLowerCase().indexOf(query.toLowerCase());
@@ -110,6 +111,7 @@ function renderResults(movies, query) {
     const frag = new DocumentFragment();
     resultList.innerHTML = '';
     activeIndex = -1;
+    currentResults = movies;
 
     movies.forEach((movie, i) => {
         const clone = template.content.cloneNode(true);
@@ -138,7 +140,14 @@ function setActive(idx) {
     activeIndex = idx;
     items.forEach((el, i) => {
         el.classList.toggle('active', i === idx);
-        if (i === idx) el.scrollIntoView({ block: 'nearest' });
+        if (i === idx) {
+            el.scrollIntoView({ block: 'nearest' });
+            // Optional: auto-load details when navigating with keyboard arrows
+            // (only if the movie exists in current search results)
+            if (currentResults && currentResults[i]) {
+                loadMovieDetails(currentResults[i]);
+            }
+        }
     });
 }
 
@@ -150,11 +159,11 @@ function selectMovie(idx, list) {
 // ── MOVIE DETAILS FETCHING ───────────────────────────
 async function loadMovieDetails(movie) {
     const id = movie.id;
-    const cacheKey = `movie_${id}`;
     
     // Hide empty state, show content
     detailEmpty.classList.add('hidden');
     detailContent.classList.remove('hidden');
+    detailContent.removeAttribute('hidden');
     
     // Clear previous content
     document.getElementById('detail-title').textContent = '';
@@ -166,15 +175,8 @@ async function loadMovieDetails(movie) {
     document.getElementById('cast-list').innerHTML = '';
     document.getElementById('video-list').innerHTML = '';
     
-    // CHECK CACHE FIRST
-    if (cache.has(cacheKey)) {
-        console.log("⚡ [CACHE HIT] Movie details for ID:", id);
-        const results = cache.get(cacheKey);
-        renderMovieDetails(results);
-        return;
-    }
-    
-    console.log("[CACHE MISS] Fetching movie details for ID:", id);
+    // Always fetch movie details (no detail caching)
+    console.log("Fetching movie details for ID:", id);
     
     // Concurrent fetches
     const detailsUrl = `${BASE_URL}/movie/${id}?language=en-US&api_key=${API_KEY}`;
@@ -188,10 +190,6 @@ async function loadMovieDetails(movie) {
     ];
     
     const results = await Promise.allSettled(promises);
-    
-    // CACHE THE RESULTS
-    cache.set(cacheKey, results);
-    console.log("✓ Cached movie details for ID:", id);
     
     renderMovieDetails(results);
 }
@@ -266,6 +264,7 @@ searchInput.addEventListener('input', () => {
         resultList.innerHTML = '';
         detailEmpty.classList.remove('hidden');
         detailContent.classList.add('hidden');
+        detailContent.setAttribute('hidden', '');
         statusBar.textContent = 'READY';
         searchWrap.dataset.loading = 'false';
         return;
@@ -283,10 +282,32 @@ window.addEventListener('keydown', e => {
 
     if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setActive(activeIndex < items.length - 1 ? activeIndex + 1 : 0);
+
+        // if currently no selection, start at first
+        if (activeIndex < 0) {
+            setActive(0);
+            return;
+        }
+
+        // move down through results
+        if (activeIndex < items.length - 1) {
+            setActive(activeIndex + 1);
+        }
     } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setActive(activeIndex > 0 ? activeIndex - 1 : items.length - 1);
+
+        // when at first result, go back to search input
+        if (activeIndex === 0) {
+            activeIndex = -1;
+            items.forEach((el) => el.classList.remove('active'));
+            searchInput.focus();
+            return;
+        }
+
+        // move up within results
+        if (activeIndex > 0) {
+            setActive(activeIndex - 1);
+        }
     } else if (e.key === 'Enter' && activeIndex >= 0) {
         items[activeIndex].click();
     }
